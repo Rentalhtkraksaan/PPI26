@@ -145,30 +145,49 @@ if (typeof firebase !== 'undefined') {
         });
     }
 
-    // --- 5. Mobile Menu & Slider Logic (FIXED FOR MOBILE) ---
-    const mobileMenuBtn = document.getElementById('mobile-menu');
-    const navLinks = document.querySelector('.nav-links');
-    const allNavLinks = document.querySelectorAll('.nav-links a');
+    // --- 5. Mobile Menu & Slider Logic (INFINITE LOOP) ---
+const mobileMenuBtn = document.getElementById('mobile-menu');
+const navLinks = document.querySelector('.nav-links');
+const allNavLinks = document.querySelectorAll('.nav-links a');
 
-    if (mobileMenuBtn) {
-        mobileMenuBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
-    }
-
-    // Tutup menu otomatis saat link diklik (Untuk HP)
-    allNavLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            navLinks.classList.remove('active');
-        });
+if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
     });
+}
 
-    const galleryGrid = document.querySelector('.gallery-grid');
-    const prevBtn = document.querySelector('.prev-btn');
-    const nextBtn = document.querySelector('.next-btn');
+allNavLinks.forEach(link => {
+    link.addEventListener('click', () => { navLinks.classList.remove('active'); });
+});
 
-    if (galleryGrid && nextBtn && prevBtn) {
-        nextBtn.addEventListener('click', () => { galleryGrid.scrollBy({ left: 350, behavior: 'smooth' }); });
-        prevBtn.addEventListener('click', () => { galleryGrid.scrollBy({ left: -350, behavior: 'smooth' }); });
-    }
+// LOGIKA SLIDER NGELOOP
+const galleryGrid = document.querySelector('.gallery-grid');
+const prevBtn = document.querySelector('.prev-btn');
+const nextBtn = document.querySelector('.next-btn');
+
+if (galleryGrid && nextBtn && prevBtn) {
+    const handleSlide = (direction) => {
+        const scrollAmount = 350;
+        const maxScroll = galleryGrid.scrollWidth - galleryGrid.clientWidth;
+        
+        if (direction === 'next') {
+            // Jika sudah di ujung, balik ke 0
+            if (galleryGrid.scrollLeft >= maxScroll - 10) {
+                galleryGrid.scrollTo({ left: 0, behavior: 'smooth' });
+            } else {
+                galleryGrid.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        } else {
+            // Jika di awal, balik ke ujung
+            if (galleryGrid.scrollLeft <= 10) {
+                galleryGrid.scrollTo({ left: maxScroll, behavior: 'smooth' });
+            } else {
+                galleryGrid.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            }
+        }
+    };
+
+    nextBtn.addEventListener('click', () => handleSlide('next'));
+    prevBtn.addEventListener('click', () => handleSlide('prev'));
+}
 });
