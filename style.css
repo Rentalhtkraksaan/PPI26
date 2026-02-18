@@ -25,6 +25,7 @@ body {
     font-family: var(--font-main);
     overflow-x: hidden;
     line-height: 1.6;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* Animations */
@@ -151,43 +152,62 @@ nav {
 
 /* Hero Section */
 .hero {
-    height: 100vh;
+    /* Gunakan min-height agar jika konten panjang, background tetap mengikuti ke bawah */
+    min-height: 100vh; 
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
+    /* Background setup */
     background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('./background.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
+    /* Fixed attachment kadang bermasalah di beberapa browser mobile, tapi tetap dipertahankan sesuai keinginanmu */
+    background-attachment: fixed; 
     position: relative;
-    padding: 0 5%;
+    /* Tambah padding atas agar konten tidak tertutup navbar yang fixed */
+    padding: 100px 5% 60px; 
 }
 
 .hero-content h1 {
-    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    /* Ukuran font lebih dinamis: minimal 2rem di HP, maksimal 4.5rem di Desktop */
+    font-size: clamp(2rem, 7vw, 4.5rem); 
     margin-bottom: 1.5rem;
     text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
     animation: fadeInUp 1s ease-out;
-    white-space: nowrap;
+    /* HAPUS white-space: nowrap karena ini penyebab teks memanjang ke samping di HP */
+    white-space: normal; 
+    line-height: 1.1;
 }
 
+/* Media Query Khusus Tablet & HP */
 @media (max-width: 768px) {
+    .hero {
+        background-attachment: scroll; /* Disarankan 'scroll' di mobile agar performa lebih ringan */
+        padding-top: 120px; /* Jarak ekstra untuk navbar mobile */
+    }
+
     .hero-content h1 {
-        white-space: normal;
         word-wrap: break-word;
         line-height: 1.2;
+        margin-bottom: 1rem;
+    }
+
+    .hero-content p {
+        font-size: 1rem; /* Ukuran paragraf lebih terbaca di HP */
+        padding: 0 10px;
     }
 }
 
 .hero-content p {
-    font-size: clamp(1rem, 3vw, 1.3rem);
+    font-size: clamp(0.9rem, 2.5vw, 1.3rem);
     color: var(--light);
     margin-bottom: 2.5rem;
     max-width: 750px;
     margin-left: auto;
     margin-right: auto;
     animation: fadeInUp 1s ease-out 0.2s backwards;
+    line-height: 1.6;
 }
 
 .cta-btn {
@@ -413,7 +433,10 @@ section {
     position: relative;
     border-radius: 20px;
     overflow: hidden;
-    height: 350px;
+    /* GANTI INI: Gunakan aspect-ratio agar 16:9 (Landscape) */
+    aspect-ratio: 4/3; 
+    width: 100%;
+    /* Hapus height: 350px agar tidak kaku */
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
 }
 
@@ -454,20 +477,41 @@ section {
 }
 
 .slider-btn {
-    display: none;
+    display: flex; /* Memastikan icon di tengah */
+    align-items: center;
+    justify-content: center;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.7);
-    color: var(--gold);
-    border: 1px solid var(--gold);
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
-    cursor: pointer;
     z-index: 10;
-    transition: var(--transition);
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    /* INI KUNCI TRANSPARANNYA */
+    background: rgba(255, 255, 255, 0.1); /* Putih tipis sekali */
+    backdrop-filter: blur(8px); /* Efek kaca buram di belakang tombol */
+    -webkit-backdrop-filter: blur(8px);
+    
+    /* Garis pinggir tipis agar bentuk bulatnya tetap kelihatan */
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+    
+    /* Warna icon panah */
+    color: white; 
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
+
+.slider-btn:hover {
+    background: rgba(212, 175, 55, 0.4); /* Berubah ke emas transparan saat disentuh */
+    border-color: #d4af37; /* Gold */
+    transform: translateY(-50%) scale(1.1); /* Sedikit membesar */
+}
+
+/* Posisi spesifik */
+.prev-btn { left: 15px; }
+.next-btn { right: 15px; }
 
 /* Countdown Section */
 .countdown-section {
@@ -552,6 +596,16 @@ section {
     border: 1px solid rgba(192, 57, 43, 0.2);
     margin-left: 5px;
 }
+.section-title {
+        text-align: center !important;
+        left: 0 !important;
+        transform: none !important;
+        width: 100% !important;
+        padding: 0 10px;
+        font-size: clamp(1.4rem, 6vw, 2rem) !important;
+        /* UBAH INI dari nowrap ke normal */
+        white-space: normal; 
+    }
 
 /* Animasi berdenyut saat ada angka berubah */
 #main-visit-count {
@@ -644,7 +698,11 @@ section {
     .gallery-item {
         min-width: 85vw;
         scroll-snap-align: center;
+        /* PASTIKAN INI JUGA 16/9 */
+        aspect-ratio: 4/3;
+        height: auto; /* Biarkan tinggi menyesuaikan rasio */
     }
+    
 
     .slider-btn {
         display: flex;
