@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bukber - PPI Kabprob 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --primary-gold: #ffcc00;
+            --bg-dark: #0a0e17;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border-glass: rgba(255, 204, 0, 0.3);
+        }
+
+        /* --- LOADING SCREEN --- */
+        #loader-wrapper {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
+        }
+
+        .loader-logo {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(255, 204, 0, 0.1);
+            border-top-color: var(--primary-gold);
+            border-radius: 50%;
+            animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+            margin-bottom: 20px;
+        }
+
+        .loader-text {
+            color: white;
+            font-size: 0.7rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 0.4; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1); } }
+
+        .loaded #loader-wrapper {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* --- GLOBAL STYLES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+        
+        body {
+            background-color: var(--bg-dark);
+            min-height: 100dvh; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            background: radial-gradient(circle at center, #1a2a44 0%, #0a0e17 100%);
+            -webkit-tap-highlight-color: transparent;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* --- MAIN CARD & ANIMATIONS --- */
+        .overlay-card {
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            width: 100%;
+            max-width: 400px;
+            padding: 40px 30px;
+            border-radius: 35px;
+            border: 1px solid var(--border-glass);
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 0 20px rgba(255, 255, 255, 0.02);
+            
+            /* Initial State for Entry */
+            opacity: 0;
+            transform: scale(0.8) translateY(40px);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .loaded .overlay-card {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* Staggered Children Animation */
+        .overlay-card > * {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .loaded .overlay-card > *:nth-child(1) { transition-delay: 0.2s; } /* Icon */
+        .loaded .overlay-card > *:nth-child(2) { transition-delay: 0.4s; } /* H1 */
+        .loaded .overlay-card > *:nth-child(3) { transition-delay: 0.5s; } /* P */
+        .loaded .overlay-card > *:nth-child(4) { transition-delay: 0.7s; } /* Sponsor */
+        .loaded .overlay-card > *:nth-child(5) { transition-delay: 0.9s; } /* Btn WA */
+        .loaded .overlay-card > *:nth-child(6) { transition-delay: 1.0s; } /* Btn Next */
+        .loaded .overlay-card > *:nth-child(7) { transition-delay: 1.2s; } /* Counter */
+
+        .loaded .overlay-card > * {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- COMPONENTS --- */
+        .icon-header {
+            font-size: 3rem;
+            color: var(--primary-gold);
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px rgba(255, 204, 0, 0.4));
+            display: inline-block;
+        }
+
+        /* Floating icon animation */
+        .icon-header i {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 { font-weight: 900; font-size: 1.6rem; letter-spacing: 1px; margin-bottom: 10px; line-height: 1.2; }
+        h1 span { color: var(--primary-gold); text-shadow: 0 0 10px rgba(255, 204, 0, 0.3); }
+        p { font-size: 0.85rem; color: #a0aec0; margin-bottom: 30px; line-height: 1.6; }
+
+        .current-sponsors {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.3s;
+        }
+        .current-sponsors:hover { border-color: var(--primary-gold); background: rgba(0, 0, 0, 0.5); }
+
+        .label-sponsor {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: var(--primary-gold);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .sponsor-item { display: flex; align-items: center; justify-content: center; gap: 15px; }
+        .sponsor-item img {
+            width: 50px; height: 50px; object-fit: contain;
+            filter: drop-shadow(0 0 8px rgba(255, 204, 0, 0.2));
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px; padding: 5px;
+        }
+
+        .sponsor-name { text-align: left; }
+        .sponsor-title-row { display: flex; align-items: center; gap: 8px; }
+        .sponsor-name b { font-size: 0.9rem; color: #fff; }
+        
+        .ig-link { color: #ff0050; font-size: 1.1rem; transition: 0.3s; }
+        .ig-link:hover { transform: scale(1.2) rotate(10deg); color: var(--primary-gold); }
+
+        .sponsor-name span { font-size: 0.65rem; color: #8892b0; display: block; margin-top: 2px; }
+
+        .btn-wa {
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            background: #25d366; color: white; text-decoration: none;
+            padding: 18px; border-radius: 18px; font-weight: 700; margin-bottom: 12px;
+            font-size: 0.9rem; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2);
+        }
+
+        .btn-next {
+            width: 100%; background: rgba(255,255,255,0.05); color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px; border-radius: 18px; cursor: pointer;
+            font-weight: 700; font-size: 0.85rem; transition: 0.3s;
+        }
+
+        .btn-wa:hover { transform: translateY(-5px) scale(1.02); background: #20ba5a; }
+        .btn-next:hover { background: var(--primary-gold); color: black; border-color: var(--primary-gold); transform: translateY(-3px); }
+
+        .visitor-counter {
+            margin-top: 30px; padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.75rem; color: #64748b;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        #visit-count {
+            color: var(--primary-gold); font-weight: 800;
+            background: rgba(255, 204, 0, 0.1);
+            padding: 2px 8px; border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader-wrapper">
+        <div class="loader-logo"></div>
+        <div class="loader-text">Initializing...</div>
+    </div>
+
+    <div class="overlay-card">
+        <div class="icon-header">
+            <i class="fas fa-bullhorn"></i>
+        </div>
+        
+        <h1>CALLING <span>SPONSORSHIP</span></h1>
+        <p>Jadilah mitra resmi dalam kemeriahan Bukber PPI Kab. Probolinggo 2026</p>
+
+        <div class="current-sponsors">
+            <span class="label-sponsor">Official Partner</span>
+            <div class="sponsor-item">
+                <img src="ht.png" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3616/3616550.png'">
+                <div class="sponsor-name">
+                    <div class="sponsor-title-row">
+                        <b>RENTAL HT KRAKSAAN</b>
+                        <a href="https://instagram.com/rentalhtkraksaan" target="_blank" class="ig-link">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                    <span>Communication Partner</span>
+                </div>
+            </div>
+        </div>
+
+        <a href="https://wa.me/6282334587562" target="_blank" class="btn-wa">
+            <i class="fab fa-whatsapp"></i> Chat Kemitraan
+        </a>
+
+        <button class="btn-next" onclick="window.location.href='main.html'">
+            Masuk 
+        </button>
+
+        <div class="visitor-counter">
+            <i class="fas fa-eye"></i>
+            <span>Live Views:</span> <span id="visit-count">...</span>
+        </div>
+    </div>
+
+    <script>
+        // Start Animations when page loaded
+        window.addEventListener('load', () => {
+            // Memberi jeda sedikit agar loader terlihat
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 1200); 
+        });
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCtQh5SpZCk2TDUk9iMOjQX5uc6gRIJyp8",
+            authDomain: "paskab-c3eb4.firebaseapp.com",
+            databaseURL: "https://paskab-c3eb4-default-rtdb.firebaseio.com",
+            projectId: "paskab-c3eb4",
+            storageBucket: "paskab-c3eb4.firebasestorage.app",
+            messagingSenderId: "630872087747",
+            appId: "1:630872087747:web:dbe8eee722f2d0f6759676"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const visitRef = db.ref('visitor_stats/total_calls');
+
+        function startCounter() {
+            // Increment total visit
+            visitRef.transaction((currentValue) => {
+                return (currentValue || 0) + 1;
+            });
+            
+            // Listen to real-time changes
+            visitRef.on('value', (snapshot) => {
+                const count = snapshot.val();
+                if (count !== null) {
+                    document.getElementById('visit-count').innerText = count.toLocaleString('id-ID');
+                }
+            });
+        }
+
+        startCounter();
+    </script>
+</body>
+</html>
