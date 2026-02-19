@@ -3,194 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Penilaian - PPI</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Form Penilaian PPI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
     <style>
         :root {
-            --primary: #e74c3c;
-            --success: #2ecc71;
-            --bg: #1a1a1a;
-            --card: #222;
+            --primary: #00b894;
+            --secondary: #0984e3;
+            --bg: #f8fafd;
+            --card: #ffffff;
+            --text-main: #2d3436;
+            --text-sub: #636e72;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            color: #ffffff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
+            padding: 20px;
         }
 
-        /* --- Form Container --- */
         .form-container {
             background: var(--card);
             padding: 40px;
             border-radius: 24px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            width: 100%;
             max-width: 480px;
-            z-index: 10;
-            border: 1px solid #333;
-            animation: slideInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            border: 1px solid #eef2f7;
         }
 
-        @keyframes slideInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .section-title {
+        .header {
             text-align: center;
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: -0.5px;
-        }
-
-        .call-to-action {
-            text-align: center;
-            color: #888;
-            font-size: 0.9rem;
             margin-bottom: 30px;
         }
 
-        /* --- Rating Stars (5 Default) --- */
-        .rating-stars {
+        .header h2 {
+            font-size: 1.8rem;
+            color: var(--secondary);
+            margin: 0;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            color: var(--text-sub);
+            font-size: 0.95rem;
+            margin-top: 8px;
+        }
+
+        /* --- Input Styles --- */
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .form-group .desc {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            margin-bottom: 8px;
+            display: block;
+            line-height: 1.4;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #eef2f7;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            background: #fdfdfd;
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary);
+            background: #fff;
+        }
+
+        /* --- Rating --- */
+        .rating-box {
+            background: #f1f7ff;
+            padding: 15px;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .stars {
             display: flex;
             flex-direction: row-reverse;
             justify-content: center;
-            margin: 20px 0;
         }
 
-        .rating-stars input { display: none; }
-        .rating-stars label {
-            font-size: 2.5rem;
-            color: #333; /* Warna dasar bintang mati */
+        .stars input { display: none; }
+        .stars label {
+            font-size: 2.2rem;
+            color: #d1d8e0;
             cursor: pointer;
-            transition: all 0.2s ease;
-            padding: 0 5px;
+            transition: 0.2s;
+            padding: 0 4px;
         }
 
-        /* Logika agar default 5 dan bisa dikurangi */
-        .rating-stars input:checked ~ label,
-        .rating-stars label:hover,
-        .rating-stars label:hover ~ label {
+        .stars input:checked ~ label,
+        .stars label:hover,
+        .stars label:hover ~ label {
             color: #f1c40f;
-            text-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
-            transform: scale(1.1);
         }
 
-        .rating-stars label:active { transform: scale(0.9); }
-
-        /* --- Input Styles --- */
-        .form-group { margin-bottom: 18px; }
-        label { display: block; margin-bottom: 7px; font-size: 0.85rem; color: #aaa; font-weight: 600; }
-        
-        input, textarea, select {
-            width: 100%; padding: 14px; background: #2a2a2a;
-            border: 2px solid #333; border-radius: 12px; color: white;
-            font-family: inherit; box-sizing: border-box; transition: 0.3s;
+        /* --- Button --- */
+        .btn-kirim {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
         }
 
-        input:focus { border-color: var(--primary); background: #333; outline: none; }
-
-        .btn-submit {
-            background: var(--primary); color: white; border: none;
-            width: 100%; padding: 16px; border-radius: 12px;
-            font-weight: 800; cursor: pointer; font-size: 1rem;
-            transition: 0.3s; margin-top: 10px; text-transform: uppercase;
+        .btn-kirim:hover {
+            background: #0771c1;
+            box-shadow: 0 8px 20px rgba(9, 132, 227, 0.2);
         }
 
-        .btn-submit:hover { background: #ff4d4d; transform: scale(1.02); box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3); }
-
-        /* --- Modal Sukses & Animasi Konfeti --- */
+        /* --- Success Overlay --- */
         #success-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); display: none;
-            justify-content: center; align-items: center; z-index: 9999;
+            background: #ffffff;
+            display: none;
+            flex-direction: column;
+            justify-content: center; align-items: center; z-index: 1000;
         }
 
-        .success-card {
-            background: white; color: #1a1a1a; padding: 40px;
-            border-radius: 30px; text-align: center; max-width: 350px;
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .checkmark__circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: var(--primary);
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
         }
 
-        @keyframes popIn {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+        .checkmark {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 2;
+            stroke: var(--primary);
+            stroke-miterlimit: 10;
+            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
         }
 
-        .confetti {
-            position: absolute; width: 10px; height: 10px; z-index: 10000;
+        .checkmark__check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
         }
 
-        .back-link {
-            display: block; text-align: center; margin-top: 15px;
-            color: #555; text-decoration: none; font-size: 0.8rem;
+        @keyframes stroke { 100% { stroke-dashoffset: 0; } }
+        @keyframes scale { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
+        @keyframes fill { 100% { box-shadow: inset 0px 0px 0px 40px transparent; } }
+
+        .progress-container {
+            width: 150px; height: 4px;
+            background: #eee;
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 0%; height: 100%;
+            background: var(--primary);
+            animation: loading 2s linear forwards;
+        }
+
+        @keyframes loading { 100% { width: 100%; } }
+
+        .back-home {
+            display: block;
+            margin-top: 20px;
+            color: var(--text-sub);
+            text-decoration: none;
+            font-size: 0.85rem;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
 <div class="form-container">
-    <h2 class="section-title">Suara Kamu</h2>
-    <p class="call-to-action">Bantu kami menjadi lebih baik dengan ulasan jujurmu.</p>
-    
-    <div class="form-group">
-        <label>NAMA LENGKAP</label>
-        <input type="text" id="input-nama" placeholder="Siapa nama kamu?" required>
+    <div class="header">
+        <h2>Penilaian PPI</h2>
+        <p>Berikan masukan Anda untuk evaluasi kami.</p>
     </div>
 
     <div class="form-group">
-        <label>KATEGORI</label>
+        <label>Nama Lengkap</label>
+        <span class="desc">Gunakan nama lengkap sesuai identitas.</span>
+        <input type="text" id="input-nama" placeholder="Masukkan nama Anda" required>
+    </div>
+
+    <div class="form-group">
+        <label>Kategori Responden</label>
+        <span class="desc">Pilih status Anda dalam organisasi atau masyarakat.</span>
         <select id="input-kategori" onchange="toggleAngkatan()">
             <option value="umum">Masyarakat Umum</option>
-            <option value="ppi">Anggota PPI (Purna)</option>
+            <option value="ppi">Purna Paskibraka (PPI)</option>
         </select>
     </div>
 
     <div id="group-angkatan" class="form-group" style="display: none;">
-        <label>ANGKATAN TAHUN</label>
+        <label>Tahun Angkatan</label>
+        <span class="desc">Tahun pelaksanaan tugas Paskibraka.</span>
         <input type="number" id="input-angkatan" placeholder="Contoh: 2024">
     </div>
 
-    <div class="form-group" style="text-align: center;">
-        <label>RATING KAMU</label>
-        <div class="rating-stars">
-            <input type="radio" name="rating" value="5" id="s5" checked><label for="s5"><i class="fas fa-star"></i></label>
-            <input type="radio" name="rating" value="4" id="s4"><label for="s4"><i class="fas fa-star"></i></label>
-            <input type="radio" name="rating" value="3" id="s3"><label for="s3"><i class="fas fa-star"></i></label>
-            <input type="radio" name="rating" value="2" id="s2"><label for="s2"><i class="fas fa-star"></i></label>
-            <input type="radio" name="rating" value="1" id="s1"><label for="s1"><i class="fas fa-star"></i></label>
+    <div class="form-group">
+        <label>Rating Layanan</label>
+        <span class="desc">Skala 1 (Kurang) sampai 5 (Sangat Baik).</span>
+        <div class="rating-box">
+            <div class="stars">
+                <input type="radio" name="rating" value="5" id="s5" checked><label for="s5"><i class="fas fa-star"></i></label>
+                <input type="radio" name="rating" value="4" id="s4"><label for="s4"><i class="fas fa-star"></i></label>
+                <input type="radio" name="rating" value="3" id="s3"><label for="s3"><i class="fas fa-star"></i></label>
+                <input type="radio" name="rating" value="2" id="s2"><label for="s2"><i class="fas fa-star"></i></label>
+                <input type="radio" name="rating" value="1" id="s1"><label for="s1"><i class="fas fa-star"></i></label>
+            </div>
         </div>
     </div>
 
     <div class="form-group">
-        <label>PESAN & KESAN</label>
-        <textarea id="input-pesan" rows="3" placeholder="Apa yang ingin kamu sampaikan?"></textarea>
+        <label>Pesan & Saran</label>
+        <span class="desc">Sampaikan kritik atau apresiasi Anda secara mendetail.</span>
+        <textarea id="input-pesan" rows="4" placeholder="Tuliskan di sini..."></textarea>
     </div>
 
-    <button class="btn-submit" onclick="submitReview()">Kirim Sekarang</button>
-    <a href="index.html" class="back-link">Kembali ke Beranda</a>
+    <button class="btn-kirim" onclick="submitReview()">Kirim Data</button>
+    <a href="index.html" class="back-home">Kembali ke Beranda</a>
 </div>
 
 <div id="success-overlay">
-    <div class="success-card">
-        <div style="font-size: 4rem; color: #2ecc71; margin-bottom: 20px;"><i class="fas fa-check-circle"></i></div>
-        <h2 style="margin: 0;">Berhasil!</h2>
-        <p style="color: #666; line-height: 1.5;">Terima kasih. Ulasan kamu telah diproses sistem kami.</p>
-        <button onclick="window.location.href='index.html'" style="background: #1a1a1a; color: white; border: none; padding: 12px 25px; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px;">Oke, Siap!</button>
+    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+        <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+        <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+    </svg>
+    <h3 style="margin-top: 15px; margin-bottom: 5px;">Data Terkirim</h3>
+    <p style="color: #777; font-size: 0.9rem;">Terima kasih atas partisipasi Anda.</p>
+    <div class="progress-container">
+        <div class="progress-fill"></div>
     </div>
 </div>
 
@@ -214,26 +299,6 @@
         document.getElementById('group-angkatan').style.display = (kat === 'ppi') ? 'block' : 'none';
     }
 
-    function createConfetti() {
-        for(let i=0; i<50; i++) {
-            const confetti = document.createElement('div');
-            confetti.classList.add('confetti');
-            confetti.style.left = Math.random() * 100 + 'vw';
-            confetti.style.backgroundColor = ['#e74c3c','#f1c40f','#2ecc71','#3498db'][Math.floor(Math.random()*4)];
-            confetti.style.top = '-10px';
-            document.body.appendChild(confetti);
-
-            const animation = confetti.animate([
-                { transform: 'translate3d(0,0,0) rotate(0deg)', opacity: 1 },
-                { transform: `translate3d(${(Math.random()-0.5)*200}px, 100vh, 0) rotate(${Math.random()*360}deg)`, opacity: 0 }
-            ], {
-                duration: Math.random() * 3000 + 2000,
-                easing: 'cubic-bezier(0, .9, .57, 1)'
-            });
-            animation.onfinish = () => confetti.remove();
-        }
-    }
-
     function submitReview() {
         const nama = document.getElementById('input-nama').value;
         const rating = document.querySelector('input[name="rating"]:checked').value;
@@ -242,7 +307,7 @@
         const angkatan = document.getElementById('input-angkatan').value;
 
         if(!nama || !pesan) {
-            alert("Nama dan Pesan jangan kosong ya!");
+            alert("Harap lengkapi Nama dan Pesan.");
             return;
         }
 
@@ -254,9 +319,10 @@
             angkatan: angkatan || "-",
             waktu: new Date().toLocaleString('id-ID')
         }).then(() => {
-            // Tampilkan Modal & Partikel
             document.getElementById('success-overlay').style.display = 'flex';
-            createConfetti();
+            setTimeout(() => {
+                window.location.href = "index.html";
+            }, 2000);
         });
     }
 </script>
