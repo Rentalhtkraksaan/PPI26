@@ -223,14 +223,12 @@ function showProduct(name, desc, price, img) {
     
     modal.style.display = "flex";
 }
-// --- 7. Real-time Penilaian Display ---
-    // --- 7. Real-time Penilaian Display ---
+// --- 7. Real-time Penilaian Display (REVISED FOR MOBILE) ---
 if (typeof firebase !== 'undefined') {
     const db = firebase.database();
     const reviewContainer = document.getElementById('review-list');
 
     if (reviewContainer) {
-        // Ambil penilaian secara realtime (limit ditambahkan jadi 10 supaya scroll terasa)
         db.ref('penilaian').limitToLast(10).on('value', (snapshot) => {
             reviewContainer.innerHTML = ""; 
             
@@ -238,37 +236,42 @@ if (typeof firebase !== 'undefined') {
             if (data) {
                 const keys = Object.keys(data);
                 
-                // --- PERUBAHAN DI SINI: Logika Smart Scroll ---
-                // Jika ulasan lebih dari 4, container akan punya tinggi maksimal dan bisa di-scroll
                 if (keys.length > 4) {
                     reviewContainer.style.maxHeight = "400px"; 
                     reviewContainer.style.overflowY = "auto";
                     reviewContainer.style.paddingRight = "10px";
-                    reviewContainer.style.scrollbarWidth = "thin"; // Untuk Firefox
-                } else {
-                    reviewContainer.style.maxHeight = "none";
-                    reviewContainer.style.overflowY = "visible";
+                    reviewContainer.style.scrollbarWidth = "thin";
                 }
 
-                // Diubah jadi array agar bisa di-reverse (yang terbaru di atas)
                 keys.reverse().forEach(key => {
                     const item = data[key];
                     
                     const card = document.createElement('div');
-                    card.style.cssText = "background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border-left: 4px solid #e74c3c; margin-bottom: 10px;";
+                    // Tambahkan transisi halus dan perbaikan padding
+                    card.style.cssText = "background: rgba(255,255,255,0.05); padding: 18px; border-radius: 12px; border-left: 4px solid #e74c3c; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;";
                     
                     let stars = "";
                     for(let i=0; i<5; i++) {
-                        stars += `<i class="fas fa-star" style="color: ${i < item.rating ? '#f1c40f' : '#444'}; font-size: 0.8em;"></i>`;
+                        stars += `<i class="fas fa-star" style="color: ${i < item.rating ? '#f1c40f' : '#444'}; font-size: 0.85em; margin-right: 2px;"></i>`;
                     }
 
+                    // STRUKTUR BARU: Memisahkan baris agar tidak tabrakan di HP
                     card.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                            <strong style="color: #fff; font-size: 0.9em;">${item.nama} <span style="font-weight: normal; opacity: 0.6; font-size: 0.8em;">(${item.kategori === 'ppi' ? 'Akt ' + item.angkatan : 'Umum'})</span></strong>
-                            <div>${stars}</div>
+                        <div class="review-header" style="display: flex; flex-direction: column; gap: 2px;">
+                            <strong style="color: #fff; font-size: 1em; line-height: 1.2;">
+                                ${item.nama}
+                            </strong>
+                            <span style="color: #888; font-size: 0.8em; font-weight: normal;">
+                                (${item.kategori === 'ppi' ? 'Akt ' + item.angkatan : 'Umum'})
+                            </span>
                         </div>
-                        <p style="color: #ccc; font-size: 0.85em; font-style: italic; margin: 0;">"${item.pesan}"</p>
-                        <small style="color: #666; font-size: 0.7em; display: block; margin-top: 5px;">${item.waktu}</small>
+                        <div style="margin: 2px 0;">${stars}</div>
+                        <p style="color: #ddd; font-size: 0.9em; font-style: italic; margin: 5px 0; line-height: 1.4;">
+                            "${item.pesan}"
+                        </p>
+                        <small style="color: #555; font-size: 0.75em; display: block; margin-top: 5px;">
+                            ${item.waktu}
+                        </small>
                     `;
                     reviewContainer.appendChild(card);
                 });
