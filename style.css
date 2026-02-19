@@ -577,138 +577,202 @@ section {
     border-radius: 2px;
     transition: var(--transition);
 }
+/* Update Logo & Live View agar Sejajar Horizontal */
 .logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 15px; /* Jarak antara gambar logo dan teks */
+}
+
+.logo-text-wrapper {
+    display: flex;
+    align-items: center; /* Menyejajarkan teks PPI dan Live View secara horizontal */
+    gap: 10px;
 }
 
 .live-views-nav {
-    background: rgba(192, 57, 43, 0.1); /* Warna merah transparan halus */
-    color: #c0392b;
-    padding: 4px 10px;
-    border-radius: 20px;
+    background: rgba(192, 57, 43, 0.15); 
+    color: #ff4d4d;
+    padding: 4px 12px;
+    border-radius: 6px;
     font-size: 0.75rem;
     font-weight: 700;
     display: flex;
     align-items: center;
     gap: 6px;
-    border: 1px solid rgba(192, 57, 43, 0.2);
+    border: 1px solid rgba(192, 57, 43, 0.3);
     margin-left: 5px;
+    white-space: nowrap;
 }
 .section-title {
-        text-align: center !important;
-        left: 0 !important;
-        transform: none !important;
-        width: 100% !important;
-        padding: 0 10px;
-        font-size: clamp(1.4rem, 6vw, 2rem) !important;
-        /* UBAH INI dari nowrap ke normal */
-        white-space: normal; 
-    }
+    text-align: center !important;
+    left: 0 !important;
+    transform: none !important;
+    width: 100% !important;
+    padding: 0 10px;
+    font-size: clamp(1.4rem, 6vw, 2rem) !important;
+    
+    /* WARNA PUTIH */
+    color: #ffffff !important; 
+    
+    /* PERBAIKAN TYPO & WRAP */
+    white-space: normal !important; 
+}
 
 /* Animasi berdenyut saat ada angka berubah */
 #main-visit-count {
     transition: all 0.3s ease;
 }
 
-/* Responsif: sembunyikan atau kecilkan di layar sangat kecil jika perlu */
-@media screen and (max-width: 400px) {
-    .live-views-nav span {
-        font-size: 0.65rem;
-    }
+.product-card {
+    position: relative; /* Wajib agar elemen anak bisa nempel di pojok */
+    overflow: hidden;
+    border-radius: 15px;
 }
 
+/* Harga Pojok Kanan Atas */
+.price-tag {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(231, 76, 60, 0.9); /* Merah PPI sedikit transparan */
+    color: white;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 0.85em;
+    z-index: 15; /* Di atas overlay */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Tombol Pesan Pojok Kanan Bawah */
+.floating-order-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: #25d366; /* Hijau WA */
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    cursor: pointer;
+    z-index: 20; /* Paling tinggi agar selalu bisa di-klik */
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.floating-order-btn:hover {
+    transform: scale(1.15) rotate(10deg);
+    background: #128c7e;
+}
+
+/* Overlay agar tidak menutupi tombol floating */
+.overlay {
+    z-index: 10;
+}
+
+/* Memastikan tulisan di dalam overlay tidak menghalangi klik */
+.product-card .overlay, 
+.product-card .overlay h3, 
+.product-card .overlay p {
+    pointer-events: none; 
+}
+
+/* Responsif: sembunyikan atau kecilkan di layar sangat kecil jika perlu */
 @media (max-width: 768px) {
-    .menu-toggle {
+    /* Logo & Live View di HP: Sejajar tapi rapi */
+    .logo-text-wrapper {
         display: flex;
+        flex-direction: column; /* Tumpuk vertikal dikit di HP biar gak sempit */
+        align-items: flex-start;
+        gap: 2px;
     }
 
+    .live-views-nav {
+        margin-left: 0;
+        transform: scale(0.9); /* Sedikit mengecil di HP */
+        transform-origin: left;
+    }
+
+    .menu-toggle {
+        display: flex;
+        z-index: 1002; /* Di atas segalanya */
+    }
+
+    /* Navbar Slide-in dari Kanan (Tidak narik ke bawah) */
     .nav-links {
-        position: absolute;
-        right: 0;
-        top: 70px;
+        position: fixed;
+        right: -100%; /* Sembunyi di kanan */
+        top: 0;
+        width: 75%; /* Menutupi sebagian layar saja */
+        height: 100vh;
         background: rgba(5, 5, 5, 0.98);
-        width: 100%;
-        height: 0;
-        overflow: hidden;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 30px;
-        transition: all 0.5s ease;
-        border-bottom: 2px solid var(--gold);
+        gap: 35px;
+        transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        border-left: 1px solid var(--gold);
+        z-index: 1001;
+        padding: 0;
     }
 
+    /* Menu Muncul */
     .nav-links.active {
-        height: 100vh;
-        top: 0;
-        padding-top: 80px;
+        right: 0; 
     }
 
+    /* Animasi Tombol Hamburger jadi X */
+    .menu-toggle.active .bar:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+    .menu-toggle.active .bar:nth-child(2) { opacity: 0; }
+    .menu-toggle.active .bar:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+    /* Pengaturan Konten Lainnya (Roadshow & Timer) */
     .section-title {
         text-align: center !important;
-        left: 0 !important;
-        transform: none !important;
-        width: 100% !important;
-        padding: 0 10px;
         font-size: clamp(1.4rem, 6vw, 2rem) !important;
-        white-space: nowrap;
-        /* Keep "Roadshow 2025-2026" on one line */
-    }
-
-    .countdown-section h2 {
-        white-space: nowrap;
-        /* Keep titles on one line */
+        white-space: normal; /* Judul bisa turun jika kepanjangan */
     }
 
     .timer {
         gap: 10px;
         flex-wrap: nowrap;
-        /* Force one line for countdown boxes */
-        justify-content: space-around;
+        justify-content: center;
         padding: 0 5px;
     }
 
     .time-box {
-        min-width: 65px;
+        min-width: 70px;
         padding: 10px 5px;
         flex: 1;
     }
 
-    .time-box span {
-        font-size: 1.5rem;
-    }
-
-    .time-box label {
-        font-size: 0.7rem;
-    }
+    .time-box span { font-size: 1.5rem; }
+    .time-box label { font-size: 0.7rem; }
 
     .gallery-grid {
         display: flex;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
-        scrollbar-width: none;
-    }
-
-    .gallery-grid::-webkit-scrollbar {
-        display: none;
+        gap: 15px;
     }
 
     .gallery-item {
         min-width: 85vw;
-        scroll-snap-align: center;
-        /* PASTIKAN INI JUGA 16/9 */
         aspect-ratio: 4/3;
-        height: auto; /* Biarkan tinggi menyesuaikan rasio */
     }
-    
 
-    .slider-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+    .slider-btn { display: flex; }
+    .prev-btn { left: 10px; }
+    .next-btn { right: 10px; }
+
 
     .prev-btn {
         left: 10px;
@@ -722,4 +786,97 @@ section {
         transform: translateY(0);
         background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
     }
+    @media (max-width: 768px) {
+    /* 1. Pastikan container galeri lebar penuh dan bersih dari padding kiri-kanan */
+    .gallery-container {
+        width: 100vw;
+        margin-left: calc(-5%); /* Menetralkan padding 5% dari section */
+        padding: 0;
+    }
+
+    @media (max-width: 768px) {
+    .gallery-grid {
+        display: flex;
+        overflow-x: auto;
+        /* Ubah mandatory menjadi proximity agar lebih fleksibel saat dipicu JS */
+        scroll-snap-type: x proximity; 
+        scroll-behavior: smooth;
+        gap: 15px;
+        padding: 0 20px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch; /* Biar scroll hp makin mulus */
+    }
+
+    .gallery-item {
+        flex: 0 0 85vw; /* Gunakan flex daripada min-width agar lebih stabil */
+        scroll-snap-align: center;
+        aspect-ratio: 4/3;
+    }
+    
+}
+}
+/* Modal Style */
+.product-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8);
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 20px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+    animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+    from {transform: scale(0.7); opacity: 0;}
+    to {transform: scale(1); opacity: 1;}
+}
+
+.close-modal {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 30px;
+    cursor: pointer;
+    color: #333;
+}
+
+#modalImg {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.wa-order-btn {
+    display: inline-block;
+    background-color: #25D366;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 20px;
+    transition: 0.3s;
+}
+
+.wa-order-btn:hover {
+    background-color: #128C7E;
+    transform: translateY(-3px);
+}
+
+.product-card { cursor: pointer; }
 }
