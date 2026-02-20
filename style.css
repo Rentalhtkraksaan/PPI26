@@ -880,3 +880,57 @@ section {
 
 .product-card { cursor: pointer; }
 }
+/* Efek Dasar Reveal (Jika belum ada di CSS kamu) */
+.reveal {
+    position: relative;
+    transform: translateY(30px);
+    opacity: 0;
+    transition: all 0.8s ease;
+}
+
+.reveal.active {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Styling Tombol Unduh agar terlihat Premium */
+.cta-download {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.08); /* Efek kaca transparan */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    transition: 0.3s;
+}
+
+.cta-download:hover {
+    background: rgba(231, 76, 60, 0.2); /* Sedikit merah saat hover */
+    border-color: #e74c3c;
+    transform: translateY(-5px) !important; /* Biar tetap bisa hover setelah animasi reveal */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.cta-download .icon i {
+    color: #e74c3c; /* Warna merah khas PDF */
+    font-size: 1.2rem;
+}
+
+/* --- Tambahkan di bagian paling bawah file CSS --- */
+
+/* Ini supaya tombol download muncul sedikit terlambat (efek estetik) */
+#hero-cta-btn + .cta-download.reveal {
+    transition-delay: 0.5s; 
+}
+
+/* Tambahkan juga ini agar saat di hover animasinya tetap jalan */
+.cta-download:hover {
+    transform: translateY(-5px) scale(1.02);
+    background: rgba(255, 255, 255, 0.15);
+}
