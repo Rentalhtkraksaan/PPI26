@@ -114,36 +114,66 @@ if (typeof firebase !== 'undefined') {
     setInterval(updateTimer, 1000);
     updateTimer();
 
-    // --- 4. BPIP Logic (Gating Tanggal 02 Maret) ---
+  // --- 4. BPIP Logic (Gating & Countdown Pendaftaran) ---
     const heroCtaBtn = document.getElementById('hero-cta-btn');
     const BPIP_OPEN_DATE = new Date('March 02, 2026 00:00:00').getTime();
+    const BPIP_CLOSE_DATE = new Date('March 15, 2026 00:00:00').getTime();
 
     if (heroCtaBtn) {
-        const checkCtaStatus = () => {
+        const updateBpipStatus = () => {
             const now = new Date().getTime();
+
+            // 1. JIKA BELUM DIBUKA (Sebelum 2 Maret)
             if (now < BPIP_OPEN_DATE) {
+                heroCtaBtn.innerText = "Dibuka 02 Maret";
                 heroCtaBtn.style.opacity = "0.7";
-                heroCtaBtn.style.cursor = "default";
-                heroCtaBtn.title = "Akan dibuka pada 02 Maret 2026";
-            } else {
+                heroCtaBtn.style.cursor = "not-allowed";
+            } 
+            
+            // 2. JIKA SEDANG DIBUKA (Antara 2 Maret - 15 Maret)
+            else if (now >= BPIP_OPEN_DATE && now < BPIP_CLOSE_DATE) {
+                const distance = BPIP_CLOSE_DATE - now;
+                
+                // Hitung mundur sederhana untuk tombol
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                
+                heroCtaBtn.innerText = `Daftar Sekarang (Sisa ${days}h ${hours}j)`;
                 heroCtaBtn.style.opacity = "1";
                 heroCtaBtn.style.setProperty('background', '#2ecc71', 'important'); 
                 heroCtaBtn.style.setProperty('border', '3px solid white', 'important');
                 heroCtaBtn.style.color = "white";
                 heroCtaBtn.style.cursor = "pointer";
                 heroCtaBtn.style.boxShadow = "0 10px 20px rgba(46, 204, 113, 0.3)";
+            } 
+            
+            // 3. JIKA SUDAH DITUTUP (Setelah 15 Maret)
+            else {
+                heroCtaBtn.innerText = "Pendaftaran Ditutup";
+                heroCtaBtn.style.background = "#666";
+                heroCtaBtn.style.opacity = "0.5";
+                heroCtaBtn.style.cursor = "not-allowed";
+                heroCtaBtn.style.pointerEvents = "none";
             }
         };
-        checkCtaStatus();
 
+        // Jalankan tiap detik supaya countdown di tombol jalan
+        setInterval(updateBpipStatus, 1000);
+        updateBpipStatus();
+
+        // Logika Klik
         heroCtaBtn.addEventListener('click', (e) => {
             const now = new Date().getTime();
             if (now < BPIP_OPEN_DATE) {
                 e.preventDefault(); 
                 alert('Sabar! Pendaftaran Resmi BPIP Belum Dibuka.\nSilakan Cek Kembali Pada Tanggal 02 Maret 2026.');
+            } else if (now >= BPIP_CLOSE_DATE) {
+                e.preventDefault();
+                alert('Maaf, Pendaftaran Resmi BPIP sudah ditutup pada 15 Maret 2026.');
             }
         });
     }
+    
 
  //// --- 5. Mobile Menu & Slider Logic (FIXED) ---
 const mobileMenu = document.getElementById('mobile-menu');
