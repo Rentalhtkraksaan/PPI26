@@ -49,22 +49,25 @@ if (typeof firebase !== 'undefined') {
     }
 }
 
-    // --- 2. Scroll Reveal Animation ---
+    // --- 2. Scroll Reveal Animation (FIXED FOR MOBILE) ---
     const revealElements = document.querySelectorAll('.reveal');
     const revealOnScroll = () => {
         const windowHeight = window.innerHeight;
-        const elementVisible = 150;
+        // elementVisible dikurangi jadi 100 agar lebih sensitif di layar HP
+        const elementVisible = 100; 
+
         revealElements.forEach((el) => {
             const elementTop = el.getBoundingClientRect().top;
+            
+            // KUNCI: Hapus bagian 'else' agar class 'active' tidak dicabut 
+            // Jadi sekali muncul, elemen tetap ada (permanen)
             if (elementTop < windowHeight - elementVisible) {
                 el.classList.add('active');
-            } else {
-                el.classList.remove('active');
             }
         });
     };
     window.addEventListener('scroll', revealOnScroll);
-    revealOnScroll();
+    revealOnScroll(); // Jalankan sekali saat halaman terbuka
 
     // --- 3. Countdown Logic (Pendaftaran Bukber) ---
     const targetDate = new Date('February 25, 2026 23:59:00').getTime();
