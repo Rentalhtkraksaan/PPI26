@@ -948,8 +948,9 @@ section {
 /* Animasi Reveal Berurutan */
 .reveal {
     opacity: 0;
-    transform: translateY(25px);
-    transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    transform: translateY(20px);
+    transition: all 0.8s ease-out;
+    pointer-events: auto; /* Pastikan tombol tetap bisa diklik */
 }
 
 .reveal.active {
