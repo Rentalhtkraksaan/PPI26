@@ -70,7 +70,7 @@ if (typeof firebase !== 'undefined') {
     revealOnScroll(); // Jalankan sekali saat halaman terbuka
 
     // --- 3. Countdown Logic (Pendaftaran Bukber) ---
-    const targetDate = new Date('February 25, 2026 23:59:00').getTime();
+    const targetDate = new Date('February 28, 2026 07:00:00').getTime();
 
     const updateTimer = () => {
         const now = new Date().getTime();
@@ -386,3 +386,4 @@ if (typeof firebase !== 'undefined') {
         }
     });
 }
+
