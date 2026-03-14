@@ -120,7 +120,7 @@ if (typeof firebase !== 'undefined') {
   // --- 4. BPIP Logic (Gating & Countdown Pendaftaran) ---
     const heroCtaBtn = document.getElementById('hero-cta-btn');
     const BPIP_OPEN_DATE = new Date('March 02, 2026 00:00:00').getTime();
-    const BPIP_CLOSE_DATE = new Date('March 15, 2026 00:00:00').getTime();
+    const BPIP_CLOSE_DATE = new Date('March 15, 2026 16:00:00').getTime();
 
     if (heroCtaBtn) {
         const updateBpipStatus = () => {
