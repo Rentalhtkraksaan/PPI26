@@ -70,7 +70,7 @@ if (typeof firebase !== 'undefined') {
     revealOnScroll(); // Jalankan sekali saat halaman terbuka
 
     // --- 3. Countdown Logic (Pendaftaran Bukber) ---
-    const targetDate = new Date('February 28, 2026 07:00:00').getTime();
+    const targetDate = new Date('February 25, 2026 23:59:00').getTime();
 
     const updateTimer = () => {
         const now = new Date().getTime();
@@ -97,9 +97,7 @@ if (typeof firebase !== 'undefined') {
                 countdownBtn.style.pointerEvents = "none";
                 countdownBtn.setAttribute("href", "#");
             }
-            if (countdownSection) {
-                countdownSection.style.filter = "grayscale(0.8)";
-            }
+            
             return;
         }
 
@@ -117,68 +115,28 @@ if (typeof firebase !== 'undefined') {
     setInterval(updateTimer, 1000);
     updateTimer();
 
-  // --- 4. BPIP Logic (Gating & Countdown Pendaftaran) ---
+
     const heroCtaBtn = document.getElementById('hero-cta-btn');
-    const BPIP_OPEN_DATE = new Date('March 02, 2026 00:00:00').getTime();
-    const BPIP_CLOSE_DATE = new Date('March 15, 2026 16:00:00').getTime();
 
     if (heroCtaBtn) {
-        const updateBpipStatus = () => {
-            const now = new Date().getTime();
+        
+        heroCtaBtn.innerText = "Visit Profile BPIP";
+        heroCtaBtn.style.opacity = "1";
+        heroCtaBtn.style.cursor = "pointer";
+        heroCtaBtn.style.pointerEvents = "auto";
+        heroCtaBtn.style.setProperty('background', '#2ecc71', 'important'); 
+        heroCtaBtn.style.setProperty('border', '3px solid white', 'important');
+        heroCtaBtn.style.color = "white";
+        heroCtaBtn.style.boxShadow = "0 10px 20px rgba(46, 204, 113, 0.3)";
 
-            // 1. JIKA BELUM DIBUKA (Sebelum 2 Maret)
-            if (now < BPIP_OPEN_DATE) {
-                heroCtaBtn.innerText = "Dibuka 02 Maret";
-                heroCtaBtn.style.opacity = "0.7";
-                heroCtaBtn.style.cursor = "not-allowed";
-            } 
-            
-            // 2. JIKA SEDANG DIBUKA (Antara 2 Maret - 15 Maret)
-            else if (now >= BPIP_OPEN_DATE && now < BPIP_CLOSE_DATE) {
-                const distance = BPIP_CLOSE_DATE - now;
-                
-                // Hitung mundur sederhana untuk tombol
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                
-                heroCtaBtn.innerText = `Daftar Sekarang (Sisa ${days}h ${hours}j)`;
-                heroCtaBtn.style.opacity = "1";
-                heroCtaBtn.style.setProperty('background', '#2ecc71', 'important'); 
-                heroCtaBtn.style.setProperty('border', '3px solid white', 'important');
-                heroCtaBtn.style.color = "white";
-                heroCtaBtn.style.cursor = "pointer";
-                heroCtaBtn.style.boxShadow = "0 10px 20px rgba(46, 204, 113, 0.3)";
-            } 
-            
-            // 3. JIKA SUDAH DITUTUP (Setelah 15 Maret)
-            else {
-                heroCtaBtn.innerText = "Pendaftaran Ditutup";
-                heroCtaBtn.style.background = "#666";
-                heroCtaBtn.style.opacity = "0.5";
-                heroCtaBtn.style.cursor = "not-allowed";
-                heroCtaBtn.style.pointerEvents = "none";
-            }
-        };
-
-        // Jalankan tiap detik supaya countdown di tombol jalan
-        setInterval(updateBpipStatus, 1000);
-        updateBpipStatus();
-
-        // Logika Klik
+        
         heroCtaBtn.addEventListener('click', (e) => {
-            const now = new Date().getTime();
-            if (now < BPIP_OPEN_DATE) {
-                e.preventDefault(); 
-                alert('Sabar! Pendaftaran Resmi BPIP Belum Dibuka.\nSilakan Cek Kembali Pada Tanggal 02 Maret 2026.');
-            } else if (now >= BPIP_CLOSE_DATE) {
-                e.preventDefault();
-                alert('Maaf, Pendaftaran Resmi BPIP sudah ditutup pada 15 Maret 2026.');
-            }
+            e.preventDefault(); 
+            window.open('https://paskibraka.bpip.go.id/dashboard', '_blank');
         });
     }
-    
 
- //// --- 5. Mobile Menu & Slider Logic (FIXED) ---
+
 const mobileMenu = document.getElementById('mobile-menu');
 const navLinks = document.querySelector('.nav-links');
 
@@ -188,7 +146,7 @@ if (mobileMenu) {
         navLinks.classList.toggle('active');
     });
 
-    // --- TAMBAHKAN INI (Auto-Close) ---
+
     const allLinks = document.querySelectorAll('.nav-links a');
     allLinks.forEach(link => {
         link.addEventListener('click', () => {
@@ -198,7 +156,7 @@ if (mobileMenu) {
     });
 }
 
-    // LOGIKA SLIDER UNIVERSAL (Jalan untuk Roadshow & Produk)
+
     document.querySelectorAll('.gallery-container').forEach(container => {
         const grid = container.querySelector('.gallery-grid');
         const prev = container.querySelector('.prev-btn');
@@ -386,5 +344,3 @@ if (typeof firebase !== 'undefined') {
         }
     });
 }
-
-
