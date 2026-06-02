@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Data Peserta</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-gray-700">
+        
+        <div id="auth-section">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-red-600/20 border border-red-500/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fas fa-key text-red-500 text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-black text-white">Masukkan Kode Akses</h2>
+                <p class="text-gray-400 text-xs mt-1">Gunakan 4 digit kode acak dari file bukti pendaftaran Anda</p>
+            </div>
+            <form id="edit-auth-form" class="space-y-4">
+                <input type="text" id="auth-code" maxlength="4" required placeholder="CONTOH: X7H2" class="w-full text-center bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-xl font-mono tracking-widest text-yellow-400 focus:outline-none focus:border-red-500 uppercase">
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg transition shadow-md">
+                    Verifikasi Kode
+                </button>
+            </form>
+        </div>
+
+        <div id="form-section" class="hidden space-y-4">
+            <div class="text-center border-b border-gray-700 pb-3 mb-2">
+                <h2 class="text-2xl font-black text-green-500">Edit Data Anda</h2>
+                <p class="text-gray-400 text-xs">Setelah disimpan, data baru otomatis di-download</p>
+            </div>
+
+            <form id="edit-data-form" class="space-y-4">
+                <input type="hidden" id="edit-uid">
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase">Nama Lengkap</label>
+                    <input type="text" id="edit-nama" required class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-red-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase">Asal Sekolah</label>
+                    <input type="text" id="edit-sekolah" required class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-red-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase">Nomor HP</label>
+                    <input type="tel" id="edit-nohp" required class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-red-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase">Email</label>
+                    <input type="email" id="edit-email" required class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-red-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase">Username Instagram</label>
+                    <input type="text" id="edit-ig" required class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-red-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase">Ganti Foto 3x4 (Kosongkan jika tidak ingin ganti)</label>
+                    <input type="file" id="edit-foto" accept=".jpg, .jpeg" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-1.5 text-xs text-gray-400 file:mr-3 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-bold file:bg-gray-600 file:text-white">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase">Link Video</label>
+                    <input type="url" id="edit-video" required class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-red-500">
+                </div>
+
+                <div class="bg-gray-900 p-3 rounded-lg border border-gray-700">
+                    <label class="block text-xs font-bold text-yellow-500 uppercase mb-1">Ganti Kode Akses (4 Digit Terbuka)</label>
+                    <input type="text" id="edit-kode-baru" maxlength="4" required class="w-full text-center bg-gray-700 border border-gray-600 rounded-lg px-2 py-1.5 font-mono text-lg tracking-widest text-yellow-400 uppercase focus:outline-none">
+                </div>
+
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded-lg transition shadow-md">
+                    Simpan & Unduh Kode Baru
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="../vote.js"></script>
+</body>
+</html>
